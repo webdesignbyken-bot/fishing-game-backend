@@ -1,2 +1,2 @@
 # fishing-game-backend
-fishingg-game-questions
+fishing-game-questions

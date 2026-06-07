@@ -12,37 +12,37 @@ export default async function handler(req, res) {
   if (!prompt) {
     return res.status(400).json({ error: 'Prompt is required' });
   }
- 
+
   try {
-    const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+    const grokResponse = await fetch('https://api.x.ai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
+        'Authorization': `Bearer ${process.env.GROK_API_KEY}`
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: "grok-beta",   // or "grok-3" if available
         messages: [
           {
             role: "system",
-            content: "You are a helpful high school math teacher. Create clean, well-organized reference sheets with proper LaTeX using $$ for math."
+            content: "You are an expert high school math teacher. Create clean, well-organized, printable reference sheets. Use $$ for display math and **bold** for headings."
           },
           {
             role: "user",
-            content: `Create a clear, printable math reference sheet for: ${prompt}. Include key formulas, properties, and examples.`
+            content: `Create a clear, professional math reference sheet for: ${prompt}. Include key formulas, properties, and examples in proper LaTeX.`
           }
         ],
         temperature: 0.7,
-        max_tokens: 1200
+        max_tokens: 1400
       })
     });
 
-    const data = await openaiResponse.json();
+    const data = await grokResponse.json();
     const content = data.choices[0].message.content;
 
     res.status(200).json({ content: content });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Failed to generate content' });
+    res.status(500).json({ error: 'Failed to generate sheet' });
   }
 }
